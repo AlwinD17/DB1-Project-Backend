@@ -26,6 +26,16 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+
+## Stack
+
+| Component        | Technology/Provider |
+|------------------|---------------------|
+| Database         | PostgreSQL          |
+| Backend          | Node + NestJS       |
+| ORM              | TypeORM             |
+| Containerization | Docker              |
+
 ## Project setup
 
 ```bash
@@ -34,66 +44,59 @@ $ npm install
 
 ## Compile and run the project
 
-```bash
-# development
-$ npm run start
+Following the template provided in the `.env.template` file, create the `.env` file with the appropiate credentials. Then, run:
 
-# watch mode
-$ npm run start:dev
+``` zsh
 
-# production mode
-$ npm run start:prod
+docker compose up --build
+
 ```
 
-## Run tests
+if an error like `Error starting userland proxy: listen tcp4 0.0.0.0:5432: bind: address already in use` appears:
 
-```bash
-# unit tests
-$ npm run test
+``` zsh
 
-# e2e tests
-$ npm run test:e2e
+sudo systemctl stop postgresql
 
-# test coverage
-$ npm run test:cov
+```
+and build docker again.
+
+Everytime a change is made, don't forget to bring the container down and up again.
+
+``` zsh
+
+docker compose down
+
 ```
 
-## Deployment
+If you encounter issues running the init.sh script inside the Docker container due to incompatible line endings 
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Open Git bash and try using:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+``` bash
 
-```bash
-$ npm install -g mau
-$ mau deploy
+dos2unix init.sh
+
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
-## Resources
+## Documentation
 
-Check out a few resources that may come in handy when working with NestJS:
+- To access to the documentation:
+ 	http://localhost:8000/api/docs
+	
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Scripts
 
-## Support
+- TypeORM client execution to pass the data source location
+``` "orm:init": "typeorm-ts-node-esm -d ./src/config/data.source.ts" ```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
+- Migration schedule:
+``` "m:gen": "npm run orm:init migration:generate" ```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+    `npm run m:gen -- ./src/migrations/init`
 
-## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- Migration run:
+``` "m:run": "npm run orm:init migration:run" ```
