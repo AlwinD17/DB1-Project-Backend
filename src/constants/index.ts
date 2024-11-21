@@ -1,4 +1,7 @@
 import { CORS } from "./cors";
+import { BOOKING_STATUS, PAYMENT_STATUS } from "./status";
 export {
-    CORS
+    CORS,
+    BOOKING_STATUS,
+    PAYMENT_STATUS
 }

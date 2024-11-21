@@ -8,6 +8,10 @@ import { AdditionalServicesModule } from './additional-services/additional-servi
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSourceConfig } from './config/data.source';
+import { TagsModule } from './tags/tags.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/guards/auth.guard';
+import { RolesGuard } from './auth/guards/roles.guard';
 
 @Module({
   imports: [
@@ -21,7 +25,14 @@ import { DataSourceConfig } from './config/data.source';
     ExperiencesModule, 
     BookingModule, 
     PaymentModule, 
-    AdditionalServicesModule],
-  providers: [],
+    AdditionalServicesModule, TagsModule],
+  providers: [    {
+    provide: APP_GUARD,
+    useClass: AuthGuard,
+  },
+  {
+    provide:APP_GUARD,
+    useClass: RolesGuard
+  }],
 })
 export class AppModule {}
