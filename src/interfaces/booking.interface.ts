@@ -1,4 +1,4 @@
-import { BOOKING_STATUS } from "../common/constants"
+import { BOOKING_STATUS } from "../common/enums"
 
 export interface IBooking{
     total_price: number
