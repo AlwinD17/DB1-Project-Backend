@@ -2,7 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as morgan from 'morgan'
-import { CORS } from './constants';
+import { CORS } from './common/constants';
 import { ValidationPipe } from '@nestjs/common';
 
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';

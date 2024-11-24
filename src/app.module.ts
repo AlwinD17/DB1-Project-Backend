@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { OrganizersModule } from './organizers/organizers.module';
 import { UsersModule } from './users/users.module';
 import { ExperiencesModule } from './experiences/experiences.module';
 import { BookingModule } from './booking/booking.module';
@@ -12,6 +11,7 @@ import { TagsModule } from './tags/tags.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -20,12 +20,15 @@ import { RolesGuard } from './auth/guards/roles.guard';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({...DataSourceConfig}),
-    OrganizersModule,
     UsersModule, 
     ExperiencesModule, 
     BookingModule, 
     PaymentModule, 
-    AdditionalServicesModule, TagsModule],
+    AdditionalServicesModule,
+    TagsModule,
+    JwtModule
+  ],
+
   providers: [    {
     provide: APP_GUARD,
     useClass: AuthGuard,

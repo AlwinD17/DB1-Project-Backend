@@ -1,7 +1,6 @@
-import { BOOKING_STATUS } from "../constants"
+import { BOOKING_STATUS } from "../common/constants"
 
 export interface IBooking{
-    booking_date: Date
     total_price: number
     status: BOOKING_STATUS
 }

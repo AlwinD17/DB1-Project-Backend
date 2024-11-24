@@ -75,7 +75,7 @@ Open Git bash and try using:
 
 ``` bash
 
-dos2unix init.sh
+dos2unix scripts/init.sh
 
 ```
 

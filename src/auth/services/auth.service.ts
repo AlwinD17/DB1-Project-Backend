@@ -17,9 +17,7 @@ export class AuthService {
         if (!validated) {
           throw new UnauthorizedException(error || 'Validation failed');
         }
-
-       
-
+        
         const payload = {
           id: user.id, 
           role:user.role
