@@ -28,10 +28,10 @@ async function bootstrap() {
 
   // Configuración de Swagger
   const config = new DocumentBuilder()
-    .setTitle('API Documentation')
+    .setTitle('BD-Project - API Documentation')
     .setDescription('The API description')
     .setVersion('1.0')
-    .addTag('api')
+    .addTag('API')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

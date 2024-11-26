@@ -3,6 +3,7 @@ import { BaseEntity } from "../../config/base.entity";
 import { IUsers } from "../../interfaces/users.interface";
 import { ExperiencesEntity } from "../../experiences/entities/experiences.entity";
 import { BookingEntity } from "../../booking/entities/booking.entity";
+import { LinksEntity } from "../../links/entities/links.entity";
 
 @Entity('users')
 export class UsersEntity extends BaseEntity implements IUsers{
@@ -22,7 +23,7 @@ export class UsersEntity extends BaseEntity implements IUsers{
     @Column()
     maternal_lastName: string;
 
-    @Column({type: 'boolean'})
+    @Column({type: 'boolean', default:false})
     isVerified: boolean;
 
     @Column()
@@ -33,5 +34,8 @@ export class UsersEntity extends BaseEntity implements IUsers{
 
     @OneToMany(() => BookingEntity, b => b.user)
     bookings: BookingEntity
+
+    @OneToMany(() => LinksEntity, l => l.organizer)
+    social_media_links: LinksEntity[]
 
 }

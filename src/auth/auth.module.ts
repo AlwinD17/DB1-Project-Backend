@@ -1,10 +1,10 @@
 import { Global, Module } from '@nestjs/common';
-import { UsersModule } from '../users/users.module';
 import { AuthService } from './services/auth.service';
 import { AuthController } from './controllers/auth.controller';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersEntity } from '../users/entities/users.entity';
+import { UsersModule } from '../users/users.module';
 
 @Global()
 @Module({
@@ -17,7 +17,7 @@ import { UsersEntity } from '../users/entities/users.entity';
       signOptions: { expiresIn: '1d' },
     }),
   ],
-  providers: [AuthService],
+  providers: [AuthService, JwtService],
   controllers: [AuthController],
 })
 export class AuthModule { }

@@ -12,6 +12,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { JwtModule } from '@nestjs/jwt';
+import { LinksModule } from './links/links.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -21,12 +23,14 @@ import { JwtModule } from '@nestjs/jwt';
     }),
     TypeOrmModule.forRoot({...DataSourceConfig}),
     UsersModule, 
+    AuthModule,
     ExperiencesModule, 
     BookingModule, 
     PaymentModule, 
     AdditionalServicesModule,
     TagsModule,
-    JwtModule
+    JwtModule,
+    LinksModule
   ],
 
   providers: [    {

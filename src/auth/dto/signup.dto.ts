@@ -1,5 +1,5 @@
-import { IsEmail, IsNotEmpty, IsString, IsStrongPassword, IsUUID } from "class-validator";
-import { UUID } from "crypto";
+import { IsEmail, IsEnum, IsNotEmpty, IsString, IsStrongPassword } from "class-validator";
+import { ERoles } from "../../config/roles.enum";
 
 export class SignUpDTO{
     
@@ -27,5 +27,7 @@ export class SignUpDTO{
     @IsString()
     readonly lastName: string    
     
-
+    @IsNotEmpty()
+    @IsEnum({enum: ERoles})
+    readonly rol: ERoles.ORGANIZER | ERoles.TRAVELER
 }

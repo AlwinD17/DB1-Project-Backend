@@ -30,7 +30,7 @@ export class AuthService {
       }
     }
 
-    // async signUp(body:SignUpDTO):Promise<{ success: boolean, data?: any, message?: string }>{
-    //     return this.usersService.createAdminUser(body)
-    // }
+    async signUp(body:SignUpDTO):Promise<{ success: boolean, data?: any, message?: string }>{
+        return this.usersService.createUser(body)
+    }
 }
