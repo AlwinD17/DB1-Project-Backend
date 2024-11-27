@@ -41,6 +41,7 @@
     "class-validator": "^0.14.1",
     "db1-project": "file:",
     "morgan": "^1.10.0",
+    "nestjs-typeorm-paginate": "^4.0.4",
     "pg": "^8.13.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",

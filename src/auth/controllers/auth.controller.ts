@@ -18,18 +18,6 @@ export class AuthController {
     @PublicAccess()
     @Post('login')
     @ApiOperation({ summary: 'User login', description: 'Authenticate a user with email and password.' })
-    @ApiBody({
-      description: 'User registration details',
-      schema: {
-        example: {
-          email: "newuser@example.com",
-          password: "Password!123",
-          firstName: "John",
-          lastName: "Doe",
-          rol: "ORGANIZER", // or "TRAVELER"
-        },
-      },
-    })
     @ApiResponse({ status: 200, description: 'Login successful.' })
     @ApiResponse({ status: 401, description: 'Invalid credentials.' })
     async login(@Body() body: LoginDTO) {
@@ -40,7 +28,18 @@ export class AuthController {
     @PublicAccess()
     @Post('register')
     @ApiOperation({ summary: 'User registration', description: 'Register a new user.' })
-    @ApiBody({ type: SignUpDTO })
+    @ApiBody({
+      description: 'User registration details',
+      schema: {
+        example: {
+          email: "newuser@example.com",
+          password: "Password!123",
+          firstName: "John",
+          lastName: "Doe",
+          role: "organizer", // or "TRAVELER"
+        },
+      },
+    })
     @ApiResponse({ status: 201, description: 'User registered successfully.' })
     @ApiResponse({ status: 400, description: 'Validation error or duplicate email.' })
     async register(@Body() body: SignUpDTO){

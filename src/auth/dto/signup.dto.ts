@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString, IsStrongPassword } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsString, IsStrongPassword, Validate } from "class-validator";
 import { ERoles } from "../../config/roles.enum";
 
 export class SignUpDTO{
@@ -25,9 +25,16 @@ export class SignUpDTO{
 
     @IsNotEmpty()
     @IsString()
-    readonly lastName: string    
+    readonly paternal_lastName: string    
+
+    @IsNotEmpty()
+    @IsString()
+    readonly maternal_lastName: string    
     
     @IsNotEmpty()
-    @IsEnum({enum: ERoles})
-    readonly rol: ERoles.ORGANIZER | ERoles.TRAVELER
+    @IsEnum(ERoles, { message: 'Role must be either ORGANIZER or TRAVELER' })
+    @Validate((value) => value === ERoles.ORGANIZER || value === ERoles.TRAVELER, {
+      message: 'Role must be ORGANIZER or TRAVELER',
+    })
+    readonly role: ERoles;
 }

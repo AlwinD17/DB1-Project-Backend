@@ -11,7 +11,6 @@ import { TagsModule } from './tags/tags.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
-import { JwtModule } from '@nestjs/jwt';
 import { LinksModule } from './links/links.module';
 import { AuthModule } from './auth/auth.module';
 
@@ -29,7 +28,6 @@ import { AuthModule } from './auth/auth.module';
     PaymentModule, 
     AdditionalServicesModule,
     TagsModule,
-    JwtModule,
     LinksModule
   ],
 
