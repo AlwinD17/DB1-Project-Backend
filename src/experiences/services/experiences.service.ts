@@ -108,4 +108,5 @@ export class ExperiencesService extends BasePaginationService<ExperiencesEntity>
             throw new InternalServerErrorException(`Failed to delete experience with ID ${id}`);
         }
     }
+
 }
