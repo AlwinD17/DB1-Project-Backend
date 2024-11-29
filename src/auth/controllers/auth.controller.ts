@@ -18,6 +18,15 @@ export class AuthController {
     @PublicAccess()
     @Post('login')
     @ApiOperation({ summary: 'User login', description: 'Authenticate a user with email and password.' })
+    @ApiBody({
+      description: 'User login details',
+      schema: {
+        example: {
+          email: "newuser@example.com",
+          password: "Password!123",
+        },
+      },
+    })
     @ApiResponse({ status: 200, description: 'Login successful.' })
     @ApiResponse({ status: 401, description: 'Invalid credentials.' })
     async login(@Body() body: LoginDTO) {
@@ -35,8 +44,9 @@ export class AuthController {
           email: "newuser@example.com",
           password: "Password!123",
           firstName: "John",
-          lastName: "Doe",
-          role: "organizer", // or "TRAVELER"
+          paternal_lastName: "Doe",
+          maternal_lastName: "Doe",
+          role: "organizer", 
         },
       },
     })

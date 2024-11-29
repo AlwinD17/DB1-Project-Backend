@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "Waiting for the database to be ready..."
-while ! nc -z database 5432; do
+while ! nc -z projectdb 5432; do
   echo "Waiting..."
   sleep 1
 done

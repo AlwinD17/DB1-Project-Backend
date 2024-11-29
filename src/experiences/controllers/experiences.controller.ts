@@ -10,6 +10,7 @@ import { UUID } from 'crypto';
 import { PublicAccess } from '../../auth/decorators/public.decorator';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { ERoles } from '../../config/roles.enum';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
 @ApiTags('Experiences')
 @Controller('experiences')
@@ -157,12 +158,13 @@ export class ExperiencesController {
     async updateExperience(
         @Body() body: UpdateExperienceDTO,
         @Param('id', ParseUUIDPipe) id: UUID
-    ): Promise<void> {
+    ): Promise<UpdateResult> {
         try {
             const result = await this.experiencesService.updateExperience(body, id);
             if (!result.affected) {
                 throw new NotFoundException(`Experience with ID ${id} not found.`);
             }
+            return result
         } catch (error) {
             throw error;
         }
@@ -184,12 +186,13 @@ export class ExperiencesController {
     @ApiResponse({ status: 200, description: 'Experience deleted successfully.' })
     @ApiResponse({ status: 404, description: 'Experience not found.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
-    async deleteExperience(@Param('id', ParseUUIDPipe) id: UUID): Promise<void> {
+    async deleteExperience(@Param('id', ParseUUIDPipe) id: UUID): Promise<DeleteResult> {
         try {
             const result = await this.experiencesService.deleteExperience(id);
             if (!result.affected) {
                 throw new NotFoundException(`Experience with ID ${id} not found.`);
             }
+            return result
         } catch (error) {
             throw error;
         }

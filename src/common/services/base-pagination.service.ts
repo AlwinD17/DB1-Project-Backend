@@ -11,8 +11,17 @@ export abstract class BasePaginationService<T> {
   applyFilters(queryBuilder: SelectQueryBuilder<T>, filters: Record<string, any>, mappings: Record<string, string>): void {
     for (const [filterKey, value] of Object.entries(filters)) {
       if (value !== undefined && mappings[filterKey]) {
-        queryBuilder.andWhere(mappings[filterKey], { [filterKey]: value });
+        const parsedValue = this.parseValueForFilter(filterKey, value);
+        queryBuilder.andWhere(mappings[filterKey], { [filterKey]: parsedValue });
       }
     }
+  }
+
+  private parseValueForFilter(filterKey: string, value: any): any {
+    
+    if (filterKey === 'title' || filterKey === 'location' || filterKey === 'name' || filterKey === 'type') {
+      return `%${value}%`;
+    }
+    return value;
   }
 }

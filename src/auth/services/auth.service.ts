@@ -25,7 +25,7 @@ export class AuthService {
         return {
           access_token: await this.jwtService.signAsync(payload)
         }
-      } catch (error) {
+      } catch (error) { 
         throw new UnauthorizedException(error.message || 'Sign-in failed');
       }
     }

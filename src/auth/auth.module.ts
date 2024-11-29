@@ -14,7 +14,7 @@ import { UsersModule } from '../users/users.module';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET || 'SECRETITO_SECRETITO',
-      signOptions: { expiresIn: '1d' },
+      signOptions: { expiresIn: '1d'},
     }),
   ],
   providers: [AuthService],

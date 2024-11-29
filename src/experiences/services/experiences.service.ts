@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExperiencesEntity } from '../entities/experiences.entity';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { UsersEntity } from '../../users/entities/users.entity';
 import { CreateExperienceDTO } from '../dtos/create-experience.dto';
 import { UUID } from 'crypto';
@@ -93,7 +93,7 @@ export class ExperiencesService extends BasePaginationService<ExperiencesEntity>
         }
       }
 
-    async updateExperience(body: UpdateExperienceDTO,id: UUID){
+    async updateExperience(body: UpdateExperienceDTO,id: UUID): Promise<UpdateResult>{
         try {
             return await this.ExperiencesRepository.update(id,body)
         } catch (error) {
@@ -101,7 +101,7 @@ export class ExperiencesService extends BasePaginationService<ExperiencesEntity>
         }
     }
 
-    async deleteExperience(id:UUID){
+    async deleteExperience(id:UUID): Promise<DeleteResult>{
         try {
             return await this.ExperiencesRepository.delete(id)
         } catch (error) {

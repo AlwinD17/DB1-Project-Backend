@@ -31,7 +31,6 @@ async function bootstrap() {
     .setTitle('BD-Project - API Documentation')
     .setDescription('The API description')
     .setVersion('1.0')
-    .addTag('API')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

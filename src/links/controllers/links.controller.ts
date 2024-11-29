@@ -6,8 +6,9 @@ import { UUID } from 'crypto';
 import { ERoles } from '../../config/roles.enum';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { PublicAccess } from '../../auth/decorators/public.decorator';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Links')
 @Controller('links')
 export class LinksController {
     constructor(private readonly linksService: LinksService) { }
