@@ -13,6 +13,6 @@ export class LinksEntity extends BaseEntity implements ILink{
     @Column({ type: 'enum', enum: SOCIAL_MEDIA })
     readonly social_media: SOCIAL_MEDIA;
 
-    @ManyToOne(() => UsersEntity, u => u.social_media_links)
+    @ManyToOne(() => UsersEntity, u => u.social_media_links, {onDelete:'CASCADE', onUpdate:'CASCADE'})
     organizer: UsersEntity
 }

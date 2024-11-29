@@ -13,6 +13,8 @@ import { AuthGuard } from './auth/guards/auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { LinksModule } from './links/links.module';
 import { AuthModule } from './auth/auth.module';
+import { AdminSeederService } from './users/seeders/admin-seeder';
+import { UsersEntity } from './users/entities/users.entity';
 
 @Module({
   imports: [
@@ -21,6 +23,7 @@ import { AuthModule } from './auth/auth.module';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({...DataSourceConfig}),
+    TypeOrmModule.forFeature([UsersEntity]),
     UsersModule, 
     AuthModule,
     ExperiencesModule, 
@@ -31,7 +34,9 @@ import { AuthModule } from './auth/auth.module';
     LinksModule
   ],
 
-  providers: [    {
+  providers: [    
+    AdminSeederService,
+    {
     provide: APP_GUARD,
     useClass: AuthGuard,
   },
@@ -40,4 +45,14 @@ import { AuthModule } from './auth/auth.module';
     useClass: RolesGuard
   }],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(
+    private AdminSeederService: AdminSeederService,
+  ) {}
+
+  async onModuleInit() {
+    if (process.env.ENABLE_SEEDING === 'true') {
+      await this.AdminSeederService.seed();
+  }
+}
+}

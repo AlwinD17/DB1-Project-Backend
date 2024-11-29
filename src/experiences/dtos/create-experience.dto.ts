@@ -1,17 +1,22 @@
-import { IsDate, IsNotEmpty, IsNumber, IsString, Validate } from "class-validator";
+import { IsArray, IsDate, IsNotEmpty, IsNumber, IsString, IsUUID } from "class-validator";
 import { IsStartDateValid, IsEndDateValid } from "../decorators/validations";
+import { UUID } from "crypto";
 
-export class CreateExperienceDTO{
-    
-    @IsNotEmpty()
-    @IsString()
-    readonly title: string
+export class CreateExperienceDTO {
 
-    @IsNotEmpty()
-    @IsString()
-    readonly description: string
+  @IsNotEmpty()
+  @IsUUID('4')
+  readonly organizer: UUID
 
-    @IsNotEmpty()
+  @IsNotEmpty()
+  @IsString()
+  readonly title: string
+
+  @IsNotEmpty()
+  @IsString()
+  readonly description: string
+
+  @IsNotEmpty()
   @IsDate()
   @IsStartDateValid({ message: 'La fecha de inicio debe ser posterior a la fecha actual.' })
   readonly start_date: Date;
@@ -21,15 +26,20 @@ export class CreateExperienceDTO{
   @IsEndDateValid('start_date', { message: 'La fecha final debe ser posterior a la fecha de inicio.' })
   readonly end_date: Date;
 
-    @IsNotEmpty()
-    @IsNumber()
-    readonly base_price: number
+  @IsNotEmpty()
+  @IsNumber()
+  readonly base_price: number
 
-    @IsNotEmpty()
-    @IsNumber()
-    readonly profit_margin: number
+  @IsNotEmpty()
+  @IsNumber()
+  readonly profit_margin: number
 
-    @IsNotEmpty()
-    @IsString()
-    readonly location: string
+  @IsNotEmpty()
+  @IsString()
+  readonly location: string
+
+  @IsNotEmpty()
+  @IsArray()
+  readonly tags: string[]
+
 }

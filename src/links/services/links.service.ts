@@ -6,6 +6,7 @@ import { CreateLinkDto } from '../dto/create-link.dto';
 import { UpdateLinkDto } from '../dto/update-link.dto';
 import { LinksEntity } from '../entities/links.entity';
 import { UUID } from 'crypto';
+import { ERoles } from '../../config/roles.enum';
 
 @Injectable()
 export class LinksService {
@@ -16,16 +17,17 @@ export class LinksService {
         private readonly usersRepository: Repository<UsersEntity>,
       ) {}
     
-      async create(organizerId: UUID, createLinkDto: CreateLinkDto) {
-        const organizer = await this.usersRepository.findOne({
-          where: { id: organizerId, role: 'organizer' },
+      async create(createLinkDto: CreateLinkDto) {
+        const {organizer, ...bodyData}= createLinkDto
+        const organizerEntity = await this.usersRepository.findOne({
+          where: { id: organizer, role: ERoles.ORGANIZER },
         });
     
-        if (!organizer) {
-          throw new NotFoundException(`Organizer with ID ${organizerId} not found`);
+        if (!organizerEntity) {
+          throw new NotFoundException(`Organizer with ID ${organizer} not found`);
         }
     
-        const link = this.linksRepository.create({ ...createLinkDto, organizer });
+        const link = this.linksRepository.create({ ...bodyData, organizer: organizerEntity });
         return this.linksRepository.save(link);
       }
     

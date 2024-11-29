@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExperiencesEntity } from '../entities/experiences.entity';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, In, Repository, UpdateResult } from 'typeorm';
 import { UsersEntity } from '../../users/entities/users.entity';
 import { CreateExperienceDTO } from '../dtos/create-experience.dto';
 import { UUID } from 'crypto';
@@ -10,6 +10,7 @@ import { BasePaginationService } from '../../common/services/base-pagination.ser
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { ExperienceFiltersDTO } from '../dtos/experience-filters.dto';
 import { UpdateExperienceDTO } from '../dtos/update-experience.dto';
+import { TagsEntity } from '../../tags/entities/tags.entity';
 
 const filterMappings = {
     title: 'experiences.title ILIKE :title',
@@ -25,22 +26,38 @@ const filterMappings = {
 export class ExperiencesService extends BasePaginationService<ExperiencesEntity> {
     constructor(
         @InjectRepository(ExperiencesEntity) readonly ExperiencesRepository: Repository<ExperiencesEntity>,
-        @InjectRepository(UsersEntity) readonly UsersRepository: Repository<UsersEntity>
+        @InjectRepository(UsersEntity) readonly UsersRepository: Repository<UsersEntity>,
+        @InjectRepository(TagsEntity) readonly TagsRepository: Repository<TagsEntity>
     ){
         super(ExperiencesRepository)
     }
 
-    async createExperience(body:CreateExperienceDTO, id: UUID){
+    async createExperience(body:CreateExperienceDTO){
         try {
-            const organizer = await this.UsersRepository.findOneBy({id, role: ERoles.ORGANIZER})
-            if (!organizer) {
-                throw new NotFoundException(`Organizer with ID ${id} not found.`)
+            const {organizer, tags,...bodyData} = body
+            const organizerEntity = await this.UsersRepository.findOneBy({id: organizer, role: ERoles.ORGANIZER})
+            if (!organizerEntity) {
+                throw new NotFoundException(`Organizer with ID ${organizer} not found.`)
             }
-
+            const existingTags = await this.TagsRepository.findBy({ tag: In(tags) }); 
+            const existingTagNames = existingTags.map((tag) => tag.tag); 
+        
+            const newTags = tags
+              .filter((tag) => !existingTagNames.includes(tag)) 
+              .map((tag) => this.TagsRepository.create({ tag })); 
+        
+            if (newTags.length) {
+              await this.TagsRepository.save(newTags)
+            }
+        
+            const allTags = [...existingTags, ...newTags]; 
+        
             const newExperience = this.ExperiencesRepository.create({
-                ...body,
-                organizer
-            })
+              ...bodyData,
+              organizer: organizerEntity,
+              tags: allTags,
+            });
+
             return await this.ExperiencesRepository.save(newExperience)
 
         } catch (error) {
@@ -93,12 +110,48 @@ export class ExperiencesService extends BasePaginationService<ExperiencesEntity>
         }
       }
 
-    async updateExperience(body: UpdateExperienceDTO,id: UUID): Promise<UpdateResult>{
+    async updateExperience(body: UpdateExperienceDTO,id: UUID): Promise<ExperiencesEntity>{
         try {
-            return await this.ExperiencesRepository.update(id,body)
-        } catch (error) {
-            throw new InternalServerErrorException(`Failed to update experience with ID ${id}`);
-        }
+            // Validar si la experiencia existe
+            const existingExperience = await this.ExperiencesRepository.findOne({
+                where: { id },
+                relations: ['tags'], // Incluye las relaciones necesarias
+              });
+              
+              if (!existingExperience) {
+                throw new NotFoundException(`Experience with ID ${id} not found.`);
+              }
+              
+              // Manejar los tags si están incluidos en el body
+              const { organizer, tags, ...bodyData } = body;
+              
+              if (tags) {
+                const existingTags = await this.TagsRepository.findBy({ tag: In(tags) });
+                const existingTagNames = existingTags.map((tag) => tag.tag);
+              
+                const newTags = tags
+                  .filter((tag) => !existingTagNames.includes(tag))
+                  .map((tag) => this.TagsRepository.create({ tag }));
+              
+                if (newTags.length) {
+                  await this.TagsRepository.save(newTags);
+                }
+              
+                const allTags = [...existingTags, ...newTags];
+              
+                // Actualizar la relación de tags en la experiencia
+                existingExperience.tags = allTags;
+              }
+              
+              // Actualizar los datos de la experiencia
+              Object.assign(existingExperience, bodyData);
+              
+              await this.ExperiencesRepository.save(existingExperience);
+              
+              return existingExperience;
+          } catch (error) {
+            throw new InternalServerErrorException(`Failed to update experience with ID ${id}: ${error.message}`);
+          }
     }
 
     async deleteExperience(id:UUID): Promise<DeleteResult>{

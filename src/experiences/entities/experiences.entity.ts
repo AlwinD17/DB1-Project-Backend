@@ -1,9 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany } from "typeorm";
 import { BaseEntity } from "../../config/base.entity";
 import { IExperience } from "../../interfaces/experience.interface";
 import { UsersEntity } from "../../users/entities/users.entity";
 import { BookingEntity } from "../../booking/entities/booking.entity";
 import { AdditionalServicesEntity } from "../../additional-services/entities/additional-services.entity";
+import { TagsEntity } from "../../tags/entities/tags.entity";
 
 @Entity('experiences')
 export class ExperiencesEntity extends BaseEntity implements IExperience{
@@ -37,4 +38,7 @@ export class ExperiencesEntity extends BaseEntity implements IExperience{
 
     @OneToMany(() => AdditionalServicesEntity, add => add.experience )
     additionalServices: AdditionalServicesEntity[]
+
+    @ManyToMany(() => TagsEntity, t => t.experiences)
+    tags: TagsEntity[]
 }

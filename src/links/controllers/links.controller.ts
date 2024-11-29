@@ -14,7 +14,7 @@ export class LinksController {
     constructor(private readonly linksService: LinksService) { }
 
     @Roles([ERoles.ORGANIZER, ERoles.ADMIN])
-    @Post('/:id')
+    @Post()
     @ApiOperation({ summary: 'Create a new link for an organizer' })
     @ApiResponse({
         status: 201,
@@ -23,10 +23,9 @@ export class LinksController {
     @ApiResponse({ status: 400, description: 'Invalid input data' })
     @ApiResponse({ status: 404, description: 'Organizer not found' })
     createLink(
-        @Param('id', ParseUUIDPipe) id: UUID,
         @Body() createLinkDto: CreateLinkDto,
     ) {
-        return this.linksService.create(id, createLinkDto);
+        return this.linksService.create(createLinkDto);
     }
 
 

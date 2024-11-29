@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { UsersEntity } from '../entities/users.entity';
 import * as argon2 from 'argon2'
 import { SignUpDTO } from '../../auth/dto/signup.dto';
+import { UUID } from 'crypto';
+import { UpdateUserDTO } from '../dtos/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -62,5 +64,32 @@ export class UsersService {
                 message: error.message
             })
         }
+    }
+
+    async updateUser(id: UUID, updateData: UpdateUserDTO): Promise<UpdateResult> {
+        
+        const user = await this.usersRepository.update(id, updateData);
+        if(user.affected === 0)throw new NotFoundException(`User with ID ${id} not found`)
+
+        return user;
+    }
+
+    async deleteUser(id: UUID): Promise<DeleteResult> {
+        const result = await this.usersRepository.delete(id);
+        if (result.affected === 0) {
+            throw new NotFoundException(`User with ID ${id} not found`);
+        }
+        return result
+    }
+
+    async getProfile(userId: UUID): Promise<Partial<UsersEntity>> {
+        const user = await this.usersRepository.findOne({
+            where: { id: userId },
+            relations: ['social_media_links'], // Incluye los enlaces sociales si aplica
+        });
+        if (!user) throw new NotFoundException(`User with ID ${userId} not found`);
+    
+        const { password, ...profileData } = user;
+        return profileData;
     }
 }

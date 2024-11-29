@@ -38,10 +38,9 @@ export class ExperiencesController {
     @ApiResponse({ status: 400, description: 'Validation error.' })
     async createExperience(
         @Body() body: CreateExperienceDTO,
-        @Param('id', ParseUUIDPipe) id: UUID
     ): Promise<ExperiencesEntity> {
         try {
-            return await this.experiencesService.createExperience(body, id);
+            return await this.experiencesService.createExperience(body);
         } catch (error) {
             throw error;
         }
@@ -158,13 +157,9 @@ export class ExperiencesController {
     async updateExperience(
         @Body() body: UpdateExperienceDTO,
         @Param('id', ParseUUIDPipe) id: UUID
-    ): Promise<UpdateResult> {
+    ): Promise<ExperiencesEntity> {
         try {
-            const result = await this.experiencesService.updateExperience(body, id);
-            if (!result.affected) {
-                throw new NotFoundException(`Experience with ID ${id} not found.`);
-            }
-            return result
+            return await this.experiencesService.updateExperience(body, id);
         } catch (error) {
             throw error;
         }

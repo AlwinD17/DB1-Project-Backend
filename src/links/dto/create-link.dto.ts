@@ -1,8 +1,14 @@
-import { IsEnum, IsNotEmpty, IsUrl } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsUrl, IsUUID } from 'class-validator';
 import { SOCIAL_MEDIA } from '../../common/enums/social-media.enum';
+import { UUID } from 'crypto';
 
 
 export class CreateLinkDto {
+
+  @IsNotEmpty()
+  @IsUUID()
+  organizer: UUID
+
   @IsUrl()
   @IsNotEmpty()
   link: string;

@@ -6,10 +6,11 @@ import { ExperiencesEntity } from './entities/experiences.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdditionalServicesEntity } from '../additional-services/entities/additional-services.entity';
 import { BookingEntity } from '../booking/entities/booking.entity';
+import { TagsEntity } from '../tags/entities/tags.entity';
 
 @Module({
   imports:[
-    TypeOrmModule.forFeature([ ExperiencesEntity, UsersEntity, AdditionalServicesEntity, BookingEntity]),
+    TypeOrmModule.forFeature([ ExperiencesEntity, UsersEntity, AdditionalServicesEntity, BookingEntity, TagsEntity]),
   ],
   providers: [ExperiencesService],
   controllers: [ExperiencesController]
