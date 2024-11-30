@@ -10,7 +10,7 @@ import { TagsEntity } from '../tags/entities/tags.entity';
 
 @Module({
   imports:[
-    TypeOrmModule.forFeature([ ExperiencesEntity, UsersEntity, AdditionalServicesEntity, BookingEntity, TagsEntity]),
+    TypeOrmModule.forFeature([ ExperiencesEntity, UsersEntity, BookingEntity, TagsEntity]),
   ],
   providers: [ExperiencesService],
   controllers: [ExperiencesController]

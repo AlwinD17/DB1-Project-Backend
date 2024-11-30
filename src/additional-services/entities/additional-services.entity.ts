@@ -19,9 +19,6 @@ export class AdditionalServicesEntity extends BaseEntity implements IAdditionalS
       })
       readonly type: AdditionalServiceType;
 
-    @ManyToOne(() => ExperiencesEntity, e => e.additionalServices)
-    experience: ExperiencesEntity
-
     @ManyToMany(() => BookingEntity, b => b.additionalServices)
     bookings: BookingEntity[]
 }

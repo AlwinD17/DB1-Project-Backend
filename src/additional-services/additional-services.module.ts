@@ -8,7 +8,7 @@ import { ExperiencesEntity } from '../experiences/entities/experiences.entity';
 
 @Module({
   imports:[
-    TypeOrmModule.forFeature([AdditionalServicesEntity, BookingEntity, ExperiencesEntity]),
+    TypeOrmModule.forFeature([AdditionalServicesEntity, BookingEntity]),
   ],
   providers: [AdditionalServicesService],
   controllers: [AdditionalServicesController]

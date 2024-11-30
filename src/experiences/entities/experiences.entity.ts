@@ -36,9 +36,6 @@ export class ExperiencesEntity extends BaseEntity implements IExperience{
     @OneToMany(() => BookingEntity, b => b.experience)
     bookings: BookingEntity[]
 
-    @OneToMany(() => AdditionalServicesEntity, add => add.experience )
-    additionalServices: AdditionalServicesEntity[]
-
     @ManyToMany(() => TagsEntity, t => t.experiences)
     tags: TagsEntity[]
 }
