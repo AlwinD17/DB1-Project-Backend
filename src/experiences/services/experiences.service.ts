@@ -80,7 +80,10 @@ export class ExperiencesService extends BasePaginationService<ExperiencesEntity>
 
     async findExperienceById(id: UUID){
         try {
-            const experience = await this.ExperiencesRepository.findOneBy({ id })
+            const experience = await this.ExperiencesRepository.createQueryBuilder('experience')
+            .leftJoinAndSelect('experience.tags', 'tags')
+            .where('experience.id = :id',{id})
+            .getOne()
             if (!experience) {
                 throw new NotFoundException(`Experience with ID ${id} not found.`)
             }
@@ -96,11 +99,10 @@ export class ExperiencesService extends BasePaginationService<ExperiencesEntity>
         filters: ExperienceFiltersDTO
       ): Promise<Pagination<ExperiencesEntity>> {
         try {
+          const organizer = await this.UsersRepository.findOneBy({id, role: ERoles.ORGANIZER})
 
           const queryBuilder = this.ExperiencesRepository.createQueryBuilder('experiences')
-            .leftJoinAndSelect('experiences.organizer', 'organizer')
-            .where('organizer.id = :id', { id })
-            .andWhere('organizer.role = :role',{role:'organizer'})
+            .where('experiences.organizer = :organizer', { organizer })
       
           this.applyFilters(queryBuilder, filters, filterMappings);
       

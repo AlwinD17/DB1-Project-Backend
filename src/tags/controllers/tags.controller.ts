@@ -12,7 +12,7 @@ import { PublicAccess } from '../../auth/decorators/public.decorator';
 export class TagsController {
   constructor(private readonly tagsService: TagsService) {}
 
-  @Roles([ERoles.ORGANIZER])
+  @Roles([ERoles.ORGANIZER, ERoles.ADMIN])
   @Post()
   create(@Body('body') body: CreateTagDTO): Promise<TagsEntity> {
     return this.tagsService.create(body);

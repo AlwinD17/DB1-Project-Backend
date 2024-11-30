@@ -13,7 +13,7 @@ export class BookingEntity extends BaseEntity implements IBooking {
     @Column()
     readonly total_price: number;
 
-    @Column({ type: 'enum', enum: BOOKING_STATUS })
+    @Column({ type: 'enum', enum: BOOKING_STATUS, default: BOOKING_STATUS.PENDING })
     readonly status: BOOKING_STATUS;
 
     @ManyToOne(() =>ExperiencesEntity, e => e.bookings)

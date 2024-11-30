@@ -19,7 +19,7 @@ export abstract class BasePaginationService<T> {
 
   private parseValueForFilter(filterKey: string, value: any): any {
     
-    if (filterKey === 'title' || filterKey === 'location' || filterKey === 'name' || filterKey === 'type') {
+    if (filterKey === 'title' || filterKey === 'location' || filterKey === 'name') {
       return `%${value}%`;
     }
     return value;

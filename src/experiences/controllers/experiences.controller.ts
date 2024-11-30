@@ -19,7 +19,7 @@ export class ExperiencesController {
 
 
     @Roles([ERoles.ADMIN, ERoles.ORGANIZER])
-    @Post(':id')
+    @Post()
     @ApiOperation({
         summary: 'Create a new experience',
         description: 'Allows an organizer to create a new experience.',

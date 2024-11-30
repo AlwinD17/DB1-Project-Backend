@@ -6,7 +6,6 @@ import { CreateAdditionalServiceDTO } from '../dto/create-addService-dto';
 import { AdditionalServiceFiltersDTO } from '../dto/validations.dto';
 import { AdditionalServicesEntity } from '../entities/additional-services.entity';
 import { BasePaginationService } from '../../common/services/base-pagination.service';
-import { ExperiencesEntity } from '../../experiences/entities/experiences.entity';
 import { UUID } from 'crypto';
 
 @Injectable()

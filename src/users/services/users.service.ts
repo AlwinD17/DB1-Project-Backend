@@ -85,7 +85,7 @@ export class UsersService {
     async getProfile(userId: UUID): Promise<Partial<UsersEntity>> {
         const user = await this.usersRepository.findOne({
             where: { id: userId },
-            relations: ['social_media_links'], // Incluye los enlaces sociales si aplica
+            relations: ['social_media_links', 'experiences'], // Incluye los enlaces sociales si aplica
         });
         if (!user) throw new NotFoundException(`User with ID ${userId} not found`);
     
