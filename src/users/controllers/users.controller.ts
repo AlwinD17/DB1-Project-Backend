@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Request } from '@nestjs/common';
 import { UpdateUserDTO } from '../dtos/update-user.dto';
 import { UsersService } from '../services/users.service';
 import { DeleteResult, UpdateResult } from 'typeorm';
@@ -11,9 +11,9 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Roles([ERoles.ADMIN,ERoles.ORGANIZER,ERoles.TRAVELER])
-  @Get('profile/:id')
-  async getProfile(@Param('id', ParseUUIDPipe) userId: UUID): Promise<any> {
-    return this.usersService.getProfile(userId);
+  @Get('profile')
+  async getProfile(@Request() req): Promise<any> {
+    return this.usersService.getProfile(req.user.id);
   }
 
   @Roles([ERoles.ADMIN, ERoles.ORGANIZER, ERoles.TRAVELER])

@@ -13,24 +13,25 @@ export class UsersService {
         @InjectRepository(UsersEntity) private readonly usersRepository: Repository<UsersEntity>,
     ){}
 
-    async validateUser(email: string, password: string): Promise<{ validated: boolean, user?: UsersEntity | any, error?: string }> {
+    async validateUser(email: string, sentPassword: string): Promise<{ validated: boolean, user?: UsersEntity | any, error?: string }> {
         try {
-            const user = await this.usersRepository.findOne({
-                where: { email },
-                select: ['id', 'email', 'password', 'role']
-            });
+            const user = await this.usersRepository.createQueryBuilder('user')
+            .addSelect('user.password') 
+            .where('user.email = :email', { email })
+            .getOne();
 
             if (!user) {
                 return { validated: false, error: 'User not found' };
             }
 
-            const isPasswordValid = await argon2.verify(user.password, password);
+            const isPasswordValid = await argon2.verify(user.password, sentPassword);
 
             if (!isPasswordValid) {
                 return { validated: false, error: 'Incorrect password' };
             }
 
-            return { validated: true, user };
+            const { password, ...sendUser} = user
+            return { validated: true, user: sendUser };
 
         } catch (error) {
 
@@ -49,13 +50,7 @@ export class UsersService {
             const user = await this.usersRepository.save(newUser)
             return ({
                 success: true,
-                data: {
-                    userId: user.id,
-                    email: user.email,
-                    firstName: user.firstName,
-                    paternal_name: user.paternal_lastName,
-                    role: user.role,
-                },
+                data: user,
                 message: 'Usuario registrado existosamente.'
             })
         } catch (error) {
@@ -85,7 +80,7 @@ export class UsersService {
     async getProfile(userId: UUID): Promise<Partial<UsersEntity>> {
         const user = await this.usersRepository.findOne({
             where: { id: userId },
-            relations: ['social_media_links', 'experiences'], // Incluye los enlaces sociales si aplica
+            relations: ['social_media_links', 'experiences'],
         });
         if (!user) throw new NotFoundException(`User with ID ${userId} not found`);
     
