@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 import { BaseEntity } from "../../config/base.entity";
 import { IPayment } from "../../interfaces/payment.interface";
 import { PAYMENT_METHOD, PAYMENT_STATUS } from "../../common/enums";
@@ -16,6 +16,7 @@ export class PaymentEntity extends BaseEntity implements IPayment{
     @Column({ type: 'enum', enum: PAYMENT_STATUS, default:PAYMENT_STATUS.PENDING })
     status: PAYMENT_STATUS;
 
-    @OneToOne(() => BookingEntity, booking => booking.payment)
-    booking: BookingEntity
+    @OneToOne(() => BookingEntity, (booking) => booking.payment, { cascade: true })
+    @JoinColumn() 
+    booking: BookingEntity;
 }

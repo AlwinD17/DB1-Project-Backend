@@ -94,44 +94,51 @@ export class ExperiencesService extends BasePaginationService<ExperiencesEntity>
     }
 
     async findExperienceByOrganizer(
-      id: UUID, 
+      id: UUID,
       options: IPaginationOptions,
       filters: ExperienceFiltersDTO,
     ): Promise<Pagination<ExperiencesEntity>> {
       try {
 
-        const organizer = await this.UsersRepository.findOne({
+        const organizerExists = await this.UsersRepository.exists({
           where: { id, role: ERoles.ORGANIZER },
         });
-        if (!organizer) {
-          throw new BadRequestException(`Organizer with ID ${id} not found.`);
+    
+        if (!organizerExists) {
+          throw new NotFoundException(`Organizer with ID ${id} not found.`);
         }
-  
+    
         const queryBuilder = this.ExperiencesRepository.createQueryBuilder('experiences')
           .leftJoinAndSelect('experiences.organizer', 'organizer')
-          .where('organizer.id = :organizerId', { organizerId: organizer.id });
-  
+          .where('organizer.id = :organizerId', { organizerId: id });
 
-        this.applyFilters(queryBuilder, filters, filterMappings);
-
+        if (filters) {
+          this.applyFilters(queryBuilder, filters, filterMappings);
+        }
+    
         return await this.paginate(options, queryBuilder);
       } catch (error) {
-        throw new BadRequestException('Failed to find experiences.');
+        console.error('Error in findExperienceByOrganizer:', error);
+    
+        if (error instanceof NotFoundException) {
+          throw error; 
+        }
+        throw new BadRequestException('Failed to find experiences. Please try again.');
       }
     }
+
     async updateExperience(body: UpdateExperienceDTO,id: UUID): Promise<ExperiencesEntity>{
         try {
-            // Validar si la experiencia existe
+
             const existingExperience = await this.ExperiencesRepository.findOne({
                 where: { id },
-                relations: ['tags'], // Incluye las relaciones necesarias
+                relations: ['tags'], 
               });
               
               if (!existingExperience) {
                 throw new NotFoundException(`Experience with ID ${id} not found.`);
               }
-              
-              // Manejar los tags si están incluidos en el body
+    
               const { organizer, tags, ...bodyData } = body;
               
               if (tags) {

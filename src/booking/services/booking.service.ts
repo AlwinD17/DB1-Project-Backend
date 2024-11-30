@@ -31,50 +31,69 @@ export class BookingService extends BasePaginationService<BookingEntity>{
         super(bookingRepository)
     }
 
-    async createBooking(body: CreateBookingDTO): Promise<BookingEntity>{
+    async createBooking(body: CreateBookingDTO): Promise<BookingEntity> {
         try {
-            const {user_id, experience_id, additional_services} = body
-
-            const userEntity = await this.usersRepository.findOneBy({ id: user_id, role: ERoles.TRAVELER})
-            if(!userEntity) throw new NotFoundException(`User with ID ${user_id} not found.`)
-
-                
-            const experienceEntity = await this.experiencesRepository.findOneBy({id: experience_id})
-            if(!experienceEntity) throw new NotFoundException(`Experience with ID ${experience_id} not found.`)
-            
-            
-            const additionalServicesEntities = await this.additionalServiceRepository.find({
-                where: {
-                    id: In(additional_services),
-                },
+            const { user_id, experience_id, additional_services } = body;
+    
+            const userEntity = await this.usersRepository.findOneBy({
+                id: user_id,
+                role: ERoles.TRAVELER,
             });
-            if (additionalServicesEntities.length === 0) {
-                throw new NotFoundException('No se encontraron servicios adicionales con los IDs proporcionados.');
-            }
-
+            if (!userEntity)
+                throw new NotFoundException(`User with ID ${user_id} not found.`);
+    
+            // Verificar que la experiencia exista
+            const experienceEntity = await this.experiencesRepository.findOneBy({
+                id: experience_id,
+            });
+            if (!experienceEntity)
+                throw new NotFoundException(
+                    `Experience with ID ${experience_id} not found.`,
+                );
+    
             let total_price = experienceEntity.base_price || 0;
-            const services_price = additionalServicesEntities.reduce(
-                (total, service) => total + (service.price || 0),
-                0
-            );
-            total_price += services_price;
-            total_price = parseFloat(total_price.toFixed(2));  
-            
+    
+            let additionalServicesEntities = [];
+
+            if (additional_services && additional_services.length > 0) {
+                additionalServicesEntities = await this.additionalServiceRepository.find({
+                    where: {
+                        id: In(additional_services),
+                    },
+                });
+    
+                if (additionalServicesEntities.length === 0) {
+                    throw new NotFoundException(
+                        'No se encontraron servicios adicionales con los IDs proporcionados.',
+                    );
+                }
+    
+                const services_price = additionalServicesEntities.reduce(
+                    (total, service) => total + (service.price || 0),
+                    0,
+                );
+    
+                total_price += services_price;
+            }
+    
+            total_price = parseFloat(total_price.toFixed(2));
+    
             const booking = this.bookingRepository.create({
                 user: userEntity,
                 experience: experienceEntity,
                 additionalServices: additionalServicesEntities,
-                total_price: total_price
-            })
-
-            return await this.bookingRepository.save(booking)
-
+                total_price: total_price,
+            });
+    
+            return await this.bookingRepository.save(booking);
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw error; 
             }
-
-            throw new InternalServerErrorException('An unexpected error occurred while creating the booking.');
+    
+            throw new InternalServerErrorException(
+                'An unexpected error occurred while creating the booking.',
+            );
         }
     }
 
