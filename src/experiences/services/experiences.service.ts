@@ -68,7 +68,8 @@ export class ExperiencesService extends BasePaginationService<ExperiencesEntity>
 
     async findAllExperiences(options: IPaginationOptions, filters: ExperienceFiltersDTO):Promise<Pagination<ExperiencesEntity>>{
         try {
-            const queryBuilder = this.ExperiencesRepository.createQueryBuilder('experiences');
+            const queryBuilder = this.ExperiencesRepository.createQueryBuilder('experiences')
+            .leftJoinAndSelect('experiences.organizer', 'organizer')
 
             this.applyFilters(queryBuilder, filters, filterMappings);
 
