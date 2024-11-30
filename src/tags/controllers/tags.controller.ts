@@ -14,8 +14,8 @@ export class TagsController {
 
   @Roles([ERoles.ORGANIZER, ERoles.ADMIN])
   @Post()
-  create(@Body('body') body: CreateTagDTO): Promise<TagsEntity> {
-    return this.tagsService.create(body);
+  create(@Body('tag') tag: string): Promise<TagsEntity> {
+    return this.tagsService.create(tag);
   }
 
   @PublicAccess()
@@ -32,8 +32,8 @@ export class TagsController {
 
   @Roles([ERoles.ADMIN])
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: UUID, @Body('body') body: CreateTagDTO): Promise<UpdateResult> {
-    return this.tagsService.update(id, body);
+  update(@Param('id', ParseUUIDPipe) id: UUID, @Body('tag') tag: string): Promise<UpdateResult> {
+    return this.tagsService.update(id, tag);
   }
 
   @Roles([ERoles.ADMIN])

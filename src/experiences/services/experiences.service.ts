@@ -94,24 +94,31 @@ export class ExperiencesService extends BasePaginationService<ExperiencesEntity>
     }
 
     async findExperienceByOrganizer(
-        id: UUID,
-        options: IPaginationOptions,
-        filters: ExperienceFiltersDTO
-      ): Promise<Pagination<ExperiencesEntity>> {
-        try {
-          const organizer = await this.UsersRepository.findOneBy({id, role: ERoles.ORGANIZER})
+      id: UUID, 
+      options: IPaginationOptions,
+      filters: ExperienceFiltersDTO,
+    ): Promise<Pagination<ExperiencesEntity>> {
+      try {
 
-          const queryBuilder = this.ExperiencesRepository.createQueryBuilder('experiences')
-            .where('experiences.organizer = :organizer', { organizer })
-      
-          this.applyFilters(queryBuilder, filters, filterMappings);
-      
-          return this.paginate(options, queryBuilder);
-        } catch (error) {
-          throw new BadRequestException('Failed to find experiences.');
+        const organizer = await this.UsersRepository.findOne({
+          where: { id, role: ERoles.ORGANIZER },
+        });
+        if (!organizer) {
+          throw new BadRequestException(`Organizer with ID ${id} not found.`);
         }
-      }
+  
+        const queryBuilder = this.ExperiencesRepository.createQueryBuilder('experiences')
+          .leftJoinAndSelect('experiences.organizer', 'organizer')
+          .where('organizer.id = :organizerId', { organizerId: organizer.id });
+  
 
+        this.applyFilters(queryBuilder, filters, filterMappings);
+
+        return await this.paginate(options, queryBuilder);
+      } catch (error) {
+        throw new BadRequestException('Failed to find experiences.');
+      }
+    }
     async updateExperience(body: UpdateExperienceDTO,id: UUID): Promise<ExperiencesEntity>{
         try {
             // Validar si la experiencia existe

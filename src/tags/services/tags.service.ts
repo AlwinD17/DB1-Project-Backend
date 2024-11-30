@@ -13,12 +13,11 @@ export class TagsService {
   ) {}
 
   // Crear un nuevo tag
-  async create(body: CreateTagDTO): Promise<TagsEntity> {
-    const { tag } = body
+  async create(tag: string): Promise<TagsEntity> {
     const existingTag = await this.tagsRepository.findOne({ where: { tag } });
     if (existingTag) throw new BadRequestException(`Tag "${tag}" already exists`);
 
-    const newTag = this.tagsRepository.create(body);
+    const newTag = this.tagsRepository.create({tag});
     return this.tagsRepository.save(newTag);
   }
 
@@ -35,8 +34,8 @@ export class TagsService {
   }
 
   // Actualizar un tag por ID
-  async update(id: UUID, body: CreateTagDTO): Promise<UpdateResult> {
-     const result =  await this.tagsRepository.update(id, body)
+  async update(id: UUID, tag: string): Promise<UpdateResult> {
+     const result =  await this.tagsRepository.update(id, {tag})
      if (result.affected === 0) throw new NotFoundException(`Tag with ID ${id} not found`);
      return result
   }

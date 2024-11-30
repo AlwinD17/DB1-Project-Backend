@@ -122,7 +122,7 @@ export class ExperiencesController {
     @ApiResponse({ status: 404, description: 'Organizer or experiences not found.' })
     @ApiResponse({ status: 400, description: 'Invalid request or filter parameters.' })
     async findExperienceByOrganizer(
-        @Param('id') id: UUID,
+        @Param('id', ParseUUIDPipe) id: UUID,
         @Query() options: IPaginationOptions,
         @Query() filters: ExperienceFiltersDTO
     ) {

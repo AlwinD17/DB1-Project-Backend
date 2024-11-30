@@ -13,8 +13,8 @@ export class PaymentEntity extends BaseEntity implements IPayment{
     @Column({type:'enum', enum:PAYMENT_METHOD})
     readonly payment_method: PAYMENT_METHOD;
 
-    @Column({ type: 'enum', enum: PAYMENT_STATUS })
-    readonly status: PAYMENT_STATUS;
+    @Column({ type: 'enum', enum: PAYMENT_STATUS, default:PAYMENT_STATUS.PENDING })
+    status: PAYMENT_STATUS;
 
     @OneToOne(() => BookingEntity, booking => booking.payment)
     booking: BookingEntity
